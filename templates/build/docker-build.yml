@@ -1,0 +1,20 @@
+parameters:
+   - name: dockerfile
+     type: string
+
+   - name: imageName
+     type: string
+
+   - name: buildContext
+     type: string
+     default: '.'
+
+   - name: additionalBuildArgs
+     type: string
+     default: ''
+
+steps: 
+   - script: |
+       docker build -f ${{ parameters.dockerfile }} ${{ parameters.additionalBuildArgs }} -t ${{ parameters.imageName }}:$(Build.BuildId) ${{ parameters.buildContext }}
+     displayName: 'Build Docker Image'
+

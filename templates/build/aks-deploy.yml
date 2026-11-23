@@ -1,0 +1,43 @@
+parameters: 
+    - name: environment
+     type: string
+     values:
+       - dev
+       - test
+       - prod
+
+    - name: imageRepository
+      type: string
+
+    - name: imageTag
+      type: string
+
+    - name: gitOpsDirectory
+      type: string
+      default: 'clusters' 
+
+ steps:
+   - script: |
+       echo "Preparing deployment Configuration"
+       echo "Environment: ${{ parameters.environment }}"
+       echo "Image Repository: ${{ parameters.imageRepository }}:${{ parameters.imageTag }}"
+     displayName: 'Prepare Deployment Details'
+
+   - checkout: gitops
+     displayName: 'Checkout GitOps Repository'
+     persistCredentials: true
+
+   script: |
+      cd ${{ parameters.gitOpsDirectory }}/${{ parameters.environment }}
+      echo "Updating image tag for ${{ parameters.environment }}"
+
+      # Update the image tag in the Kustomization YAML file
+
+      kustomize edit set image ecommerce=${{ parameters.imageRepository }}:${{ parameters.imageTag }}   
+
+      git config user.email "azure-pipelines@devops.local"
+      git config user.name "Azure Pipelines"
+      git add .
+      git commit -m "Update image tag to ${{ parameters.imageTag }} for ${{ parameters.environment }}" || echo "No changes to commit"
+      git push
+    displayName: 'Update gitops image version'  

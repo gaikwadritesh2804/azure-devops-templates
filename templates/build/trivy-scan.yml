@@ -1,0 +1,24 @@
+parameters:
+   - name: imageName
+     type: string
+
+   - name: trivySeverity
+     type: string
+     default: 'CRITICAL,HIGH'
+
+   - name: exitCode
+     type: string
+     default: '1'
+
+steps:
+    # install trivy
+   - script: |     
+        curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
+        trivy --version
+     displayName: 'Install Trivy'
+    
+        # scan docker image    
+
+   - script: |
+         trivy image --scanner vuln --severity ${{ parameters.trivySeverity }} --exit-code ${{ parameters.exitCode }} ${{ parameters.imageName }}:$(Build.BuildId)  
+      displayName: 'Scan Docker Image'

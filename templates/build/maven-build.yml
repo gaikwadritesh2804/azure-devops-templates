@@ -1,0 +1,21 @@
+parameters:
+    - name: mavenPomFile
+      type: string
+      default: 'pom.xml'
+
+    - name: goals
+      type: string
+      default: 'clean verify'
+
+steps:
+    - task: Maven@4
+      displayName: 'Build and verify Java Application'
+      inputs:
+        mavenPomFile: ${{ parameters.mavenPomFile }}
+        goals: ${{ parameters.goals }}      
+        options: '-B'
+        publishJUnitResults: true
+        testResultsFiles: '**/surefire-reports/TEST-*.xml'
+        javaHomeOption: 'JDKVersion'
+        jdkVersionOption: '1.21'
+        mavenVersionOption: 'Default'  
