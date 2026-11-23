@@ -7,12 +7,17 @@ parameters:
       type: string
       default: 'clean verify'
 
+    - name: sonarQubeRunAnalysis
+      type: boolean
+      default: false  
+
 steps:
     - task: Maven@4
       displayName: 'Build and verify Java Application'
       inputs:
         mavenPomFile: ${{ parameters.mavenPomFile }}
         goals: ${{ parameters.goals }}      
+        sonarQubeRunAnalysis: ${{ parameters.sonarQubeRunAnalysis }}
         options: '-B'
         publishJUnitResults: true
         testResultsFiles: '**/surefire-reports/TEST-*.xml'
