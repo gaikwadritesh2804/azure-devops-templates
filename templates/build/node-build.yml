@@ -1,26 +1,27 @@
+
 parameters:
-   - name: workingDirectory
-     type: string
-     default: frontend
+  - name: workingDirectory
+    type: string
+    default: 'frontend'
 
-   - name: nodeVersion
-     type: string
-     default: '22.x'
+  - name: nodeVersion
+    type: string
+    default: '22.x'
 
-   - name: buildCommand
-     type: string
-     default: 'npm run build'
+  - name: buildCommand
+    type: string
+    default: 'npm run build'
 
 steps:
-   - task: NodeTool@0
-     displayName: 'Install Node.js'
-     inputs:
-       versionSpec: ${{ parameters.nodeVersion }}
-       checkLatest: true
+  - task: NodeTool@0
+    displayName: 'Install Node.js'
+    inputs:
+      versionSpec: ${{ parameters.nodeVersion }}
+      checkLatest: true
 
-   - script: |
-        npm ci   
-        npm run lint
-        ${{ parameters.buildCommand }}
-    displayName: 'Install dependencies'          
+  - script: |
+      npm ci
+      npm run lint
+      ${{ parameters.buildCommand }}
+    displayName: 'Install dependencies and build frontend'
     workingDirectory: ${{ parameters.workingDirectory }}
